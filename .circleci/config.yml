@@ -24,9 +24,9 @@ workflows:
          filters:
            branches:
              only: dev
-  say-hello-ignore-dev:
+  say-hello-ignore-dev-workflow:
     jobs:
-      - say-hello:
+      - say-hello-ignore-dev:
          filters:
            branches:
              ignore: dev
