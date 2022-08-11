@@ -1,6 +1,23 @@
 version: 2.1
 
 jobs:
+  build-and-push-docker-image:
+    docker:
+      - image: cimg/go:1.17
+        auth:
+          username: beksultancs
+          password: NeverForgotYourPassword
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          docker build -t beksultancs/circleci:$TAG .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push beksultancs/circleci:$TAG
+       
   say-hello:
     docker:
       - image: cimg/base:stable
@@ -9,24 +26,12 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
-  say-hello-ignore-dev:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run:
-          name: "Say Hello Besides dev branch"
-          command: "echo Hello, Everybody Besides DEV"
+          
 workflows:
-  say-hello-workflow:
+  build-and-push-docker-image-workflow:
     jobs:
-      - say-hello:
-         filters:
-           branches:
-             only: dev
-  say-hello-ignore-dev-workflow:
-    jobs:
-      - say-hello-ignore-dev:
-         filters:
-           branches:
-             ignore: dev
+      - build-and-push-docker-image:
+          filters:
+            branches:
+              only: dev
+      - say-hello
