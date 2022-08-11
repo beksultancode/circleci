@@ -27,6 +27,7 @@ public class CircleciExampleApplication {
                 <body>
                     <p>Hello from Beksultan</p>
                     <img src="https://i.pinimg.com/564x/81/26/35/812635875bbc1b778f1dc33d3699aaf0.jpg">
+                    <p> something changed </p>
                 </body>
                 </html>
                 """;
