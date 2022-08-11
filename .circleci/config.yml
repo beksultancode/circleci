@@ -9,7 +9,14 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
-
+  say-hello-ignore-dev:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: "Say Hello Besides dev branch"
+          command: "echo Hello, Everybody Besides DEV"
 workflows:
   say-hello-workflow:
     jobs:
@@ -17,3 +24,9 @@ workflows:
          filters:
            branches:
              only: dev
+  say-hello-ignore-dev-workflow:
+    jobs:
+      - say-hello-ignore-dev:
+         filters:
+           branches:
+             ignore: dev
