@@ -31,7 +31,7 @@ jobs:
       - run:
           name: "Insert Beks to docker-compose.yml and deploy using eb cli"
           command: |
-            sed -i -e "s;%BEKS%;$CIRCLE_BUILD_NUM;g" ./circleci-example/docker-compose.yml
+            sed -i -e "s;%BEKS%;$CIRCLE_BUILD_NUM;g" ./circleci-example/Dockerrun.aws.json
             cd ./circleci-example && eb init $AWS_APPLICATION_NAME -r $AWS_DEFAULT_REGION -p docker
             eb deploy
 
@@ -48,6 +48,7 @@ workflows:
           filters:
             branches:
               only: dev
-
+          requires:
+            - build-and-push-docker-image
         
 
