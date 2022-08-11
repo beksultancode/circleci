@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs: 
+  eb: circleci/aws-elastic-beanstalk@2.0.1
+
 jobs:
   build-and-push-docker-image:
     docker:
@@ -18,21 +21,33 @@ jobs:
           docker build -t beksultancs/circleci:$TAG .
           echo NeverForgotYourPassword | docker login -u beksultancs --password-stdin
           docker push beksultancs/circleci:$TAG
-       
-  say-hello:
+
+  deploy-to-aws-elastic-beanstalk:
     docker:
-      - image: cimg/base:stable
+      - image: 'cimg/base:stable'
     steps:
       - checkout
+      - eb/setup
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-          
+          name: "Insert Beks to docker-compose.yml and deploy using eb cli"
+          command: |
+            sed -i -e "s;%BEKS%;$CIRCLE_BUILD_NUM;g" ./circleci-example/docker-compose.yml
+            cd ./circleci-example && eb init $AWS_APPLICATION_NAME -r $AWS_DEFAULT_REGION -p docker
+            eb deploy
+
 workflows:
-  build-and-push-docker-image-workflow:
+  deploy:
     jobs:
       - build-and-push-docker-image:
           filters:
             branches:
               only: dev
-      - say-hello
+      - deploy-to-aws-elastic-beanstalk:
+          context:
+            - CIRCLECI-CONTEXT
+          filters:
+            branches:
+              only: dev
+
+        
+
