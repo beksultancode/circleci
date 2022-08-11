@@ -16,6 +16,7 @@ jobs:
           TAG=0.1.$CIRCLE_BUILD_NUM
           cd circleci-example
           docker build -t beksultancs/circleci:$TAG .
+          echo this is password $DOCKER_PASS
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push beksultancs/circleci:$TAG
        
