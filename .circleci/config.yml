@@ -17,6 +17,8 @@ jobs:
           cd circleci-example
           docker build -t beksultancs/circleci:$TAG .
           echo this is password $DOCKER_PASS
+          echo this is username $DOCKER_USER
+          echo this is username $DOCKERHUB_USER
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push beksultancs/circleci:$TAG
        
